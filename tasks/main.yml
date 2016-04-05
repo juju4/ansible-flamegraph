@@ -20,8 +20,15 @@
 - git: repo=https://github.com/brendangregg/FlameGraph
        dest="{{ flamegraph_root }}"
 
+- name: get state of /proc/sys/kernel/perf_event_paranoid
+  command: "cat /proc/sys/kernel/perf_event_paranoid"
+  register: procperf
+  changed_when: false
+- debug: var=procperf.stdout_lines
+
 - stat: path="{{ flamegraph_outdir }}/perf.data"
   register: perfdata
+- debug: var=perfdata
 - name: run perf_events
   command: "perf record -F 99 -a --call-graph=dwarf -o {{ flamegraph_outdir }}/perf.data -- sleep {{ flamegraph_duration }}"
   args:

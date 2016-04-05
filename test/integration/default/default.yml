@@ -3,4 +3,5 @@
 - hosts: all
   roles:
     - flamegraph
+  become: yes
 
