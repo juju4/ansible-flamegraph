@@ -1,0 +1,7 @@
+
+flamegraph_root: /opt/flamegraph
+flamegraph_outdir: /tmp
+flamegraph_duration: 60
+## if want a specific process
+#flamegraph_pid:
+
