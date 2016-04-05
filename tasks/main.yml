@@ -25,8 +25,15 @@
   register: procperf
   changed_when: false
 - debug: var=procperf.stdout_lines
+- name: update /proc/sys/kernel/perf_event_paranoid to 1 (can trace a command with perf stat or perf record, and get kernel profiling data)
+  sysctl: name=kernel.perf_event_paranoid value=1 state=present
+  when: procperf.stdout_lines is defined and procperf.stdout_lines != 1
 
-- stat: path="{{ flamegraph_outdir }}/perf.data"
+- name: check target directory exists
+  file: dest="{{ flamegraph_outdir }}" state=directory mode=0755
+
+- name: check if existing perf.data file
+  stat: path="{{ flamegraph_outdir }}/perf.data"
   register: perfdata
 - debug: var=perfdata
 - name: run perf_events

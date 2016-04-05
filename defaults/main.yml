@@ -1,6 +1,6 @@
 
 flamegraph_root: /opt/flamegraph
-flamegraph_outdir: /tmp
+flamegraph_outdir: /tmp/perf
 flamegraph_duration: 60
 ## if want a specific process
 #flamegraph_pid:
