@@ -1,0 +1,7 @@
+---
+
+- name: apt | perf packages install
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - linux-tools-{{ ansible_kernel }}
+    - perl

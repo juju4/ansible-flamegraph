@@ -28,7 +28,7 @@ For example
 
 Output file can easily be retrieve with command like
 ```
-$ ansible -i localhost, localhost -c local -m fetch -a "src=/tmp/out.svg dest=."
+$ ansible -i localhost, localhost -c local -m fetch -a "src=/tmp/perf/out.svg dest=."
 ```
 
 
@@ -55,6 +55,8 @@ $ vagrant ssh
 
 ## Troubleshooting & Known issues
 
+* Under travis, it seems kernel permissions prevent to do capture.
+* perf.data conversion fails sometimes with "ERROR: No stack counts found"
 
 ## License
 

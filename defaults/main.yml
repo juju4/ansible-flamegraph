@@ -1,4 +1,7 @@
 
+flamegraph_install: true
+flamegraph_capture: true
+
 flamegraph_root: /opt/flamegraph
 flamegraph_outdir: /tmp/perf
 flamegraph_duration: 60

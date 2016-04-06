@@ -1,0 +1,7 @@
+---
+
+- name: yum | perf packages install
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - perf
+    - perl

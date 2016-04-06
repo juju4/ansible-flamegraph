@@ -2,65 +2,16 @@
 ## http://www.brendangregg.com/flamegraphs.html
 ## http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html
 
-- name: apt | perf packages install
-  apt: name={{item}} state=present update_cache=yes
-  with_items:
-    - linux-tools-{{ ansible_kernel }}
-    - perl
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- include: debian.yml
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and (flamegraph_install is defined and flamegraph_install)
 
-
-- name: yum | perf packages install
-  yum: name={{item}} state=present update_cache=yes
-  with_items:
-    - perf
-    - perl
-  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+- include: redhat.yml
+  when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and (flamegraph_install is defined and flamegraph_install)
 
 - git: repo=https://github.com/brendangregg/FlameGraph
        dest="{{ flamegraph_root }}"
+  when: (flamegraph_install is defined and flamegraph_install)
 
-- name: get state of /proc/sys/kernel/perf_event_paranoid
-  command: "cat /proc/sys/kernel/perf_event_paranoid"
-  register: procperf
-  changed_when: false
-- debug: var=procperf.stdout_lines
-- name: update /proc/sys/kernel/perf_event_paranoid to 1 (can trace a command with perf stat or perf record, and get kernel profiling data)
-  sysctl: name=kernel.perf_event_paranoid value=1 state=present
-  when: procperf.stdout_lines is defined and procperf.stdout_lines != 1
-
-- name: check target directory exists
-  file: dest="{{ flamegraph_outdir }}" state=directory mode=0755
-
-- name: check if existing perf.data file
-  stat: path="{{ flamegraph_outdir }}/perf.data"
-  register: perfdata
-- debug: var=perfdata
-- name: run perf_events
-  command: "perf record -F 99 -a --call-graph=dwarf -o {{ flamegraph_outdir }}/perf.data -- sleep {{ flamegraph_duration }}"
-  args:
-    chdir: "{{ flamegraph_outdir }}"
-  when: flamegraph_pid is not defined and not perfdata.stat.exists
-  register: perf
-- debug: var=perf.rc
-- debug: var=perf.stderr
-- name: run perf_events - specific pid
-  command: "perf record -F 99 -p {{ flamegraph_pid }} -a --call-graph=dwarf -o {{ flamegraph_outdir }}/perf.data -- sleep {{ flamegraph_duration }}"
-  args:
-    chdir: "{{ flamegraph_outdir }}"
-  when: flamegraph_pid is defined and not perfdata.stat.exists
-- name: check output
-  command: "ls -l {{ flamegraph_outdir }}/"
-  changed_when: false
-  register: perf2
-- debug: var=perf2.stdout_lines
-
-- stat: path="{{ flamegraph_outdir }}/out.svg"
-  register: perfsvg
-- name: convert record to flamegraph
-  shell: "perf script | env LC_ALL=en_US.UTF-8 {{ flamegraph_root }}/stackcollapse-perf.pl --kernel | env LC_ALL=en_US.UTF-8 {{ flamegraph_root }}/flamegraph.pl --color=java > {{ flamegraph_outdir }}/out.svg"
-  args:
-    chdir: "{{ flamegraph_outdir }}"
-  when: not perfsvg.stat.exists
-
+- include: flamegraph-capture.yml
+  when: (flamegraph_capture is defined and flamegraph_capture)
 
