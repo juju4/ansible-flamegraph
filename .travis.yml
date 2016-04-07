@@ -15,10 +15,11 @@ env:
     version: 14.04
     init: /sbin/init
     run_opts: ""
-  - distribution: ubuntu
-    version: 12.04
-    init: /sbin/init
-    run_opts: ""
+## FIXME! No package matching 'linux-tools-3.19.0-30-generic' is available
+#  - distribution: ubuntu
+#    version: 12.04
+#    init: /sbin/init
+#    run_opts: ""
 
 services:
   - docker
