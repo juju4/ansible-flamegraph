@@ -11,11 +11,12 @@ describe file('/opt/flamegraph/stackcollapse-perf.pl') do
   it { should be_executable }
 end
 
-describe file('/tmp/perf.data') do
-  it { should be_file }
-end
-describe file('/tmp/out.svg') do
-  it { should be_file }
-end
+### not done inside containers
+#describe file('/tmp/perf.data') do
+#  it { should be_file }
+#end
+#describe file('/tmp/out.svg') do
+#  it { should be_file }
+#end
 
 
