@@ -4,6 +4,6 @@
   vars:
     - flamegraph_capture: false
   roles:
-    - flamegraph
+    - juju4.flamegraph
   become: yes
 
