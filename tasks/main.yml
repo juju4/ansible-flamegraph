@@ -13,8 +13,8 @@
   when: (flamegraph_install is defined and flamegraph_install)
 
 - include: flamegraph-capture.yml
-  when: (flamegraph_capture is defined and flamegraph_capture) and (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "kvm"))
+  when: (flamegraph_capture is defined and flamegraph_capture) and (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
 
 - debug: msg="Not running flamegraph capture as container"
-  when: not (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "kvm"))
+  when: not (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
 

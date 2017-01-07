@@ -11,10 +11,11 @@ env:
     version: 7
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - distribution: ubuntu
-    version: 16.04
-    init: /lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+## kernel tools need alignment between current kernel and headers... nok in container
+#  - distribution: ubuntu
+#    version: 16.04
+#    init: /lib/systemd/systemd
+#    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 #    run_opts: "--cap-add SYS_ADMIN"
   - distribution: ubuntu
     version: 14.04
@@ -40,8 +41,7 @@ before_install:
   - env
   - pwd
   - find -ls
-  - ln -s ansible-flamegraph ../juju4.flamegraph
-#  - ./get-dependencies.sh
+  - "[ -f get-dependencies.sh ] && sh -x get-dependencies.sh"
   - cp test/travis/initctl_faker test/
   # Customize container
   - 'sudo docker build --rm=true --file=test/travis/Dockerfile.${distribution}-${version} --tag=${distribution}-${version}:ansible test'
