@@ -5,3 +5,44 @@
   with_items:
     - linux-tools-{{ ansible_kernel }}
     - perl
+    - git
+    - systemtap
+## not available on trusty
+#    - ktap
+
+- name: apt | add debug symbols repository
+  template:
+    src: ddebs.list.j2
+    dest: /etc/apt/sources.list.d/ddebs.list
+    mode: '0644'
+    backup: yes
+  register: dbgrep
+
+- name: apt | add debug symbol archive signing key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "{{ item }}"
+    state: present
+  with_items:
+    - 428D7C01
+    - C8CAB6595FDFF622
+
+- name: apt | update cache
+  apt: update_cache=yes
+  when: dbgrep.changed
+
+- name: apt | ensure few debug packages are present
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+#    - openssh-server-dbgsym
+    - libc6-dbgsym 
+#    - rng-tools-dbgsym
+    - dpkg-dbgsym
+#    - dash-dbgsym
+## ok on xenial, nok trusty
+#    - sysstat-dbgsym
+#    - openntpd-dbgsym
+#    - auditd-dbgsym
+

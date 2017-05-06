@@ -3,8 +3,18 @@ flamegraph_install: true
 flamegraph_capture: true
 
 flamegraph_root: /opt/flamegraph
-flamegraph_outdir: /tmp/perf
+flamegraph_outdir: "/tmp/perf-{{ ansible_date_time.date }}"
+flamegraph_outfile: "{{ flamegraph_outdir }}/out.svg"
 flamegraph_duration: 60
 ## if want a specific process
 #flamegraph_pid:
+
+flamegraph_perftools: perf_events
+## FIXME! box stap & ktap have issues on xenial
+#flamegraph_perftools: systemtap
+#flamegraph_perftools: ktap
+
+## fetch to orchestrator?
+flamegraph_pull: true
+flamegraph_pulldir: "tmp/{{ inventory_hostname }}-{{ ansible_date_time.date }}"
 

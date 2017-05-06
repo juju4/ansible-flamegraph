@@ -1,0 +1,14 @@
+---
+
+## Note: can be too memory consuming to transfer with python/base64
+- debug: var=flamegraph_pull
+- block:
+    - name: retrieve output dir to orchestrator
+      fetch: 
+        src: "{{ item }}"
+        dest: "{{ flamegraph_pulldir }}/"
+      with_items:
+        - "{{ flamegraph_outdir }}/perf.data"
+        - "{{ flamegraph_outfile }}"
+  when: flamegraph_pull is defined and flamegraph_pull
+

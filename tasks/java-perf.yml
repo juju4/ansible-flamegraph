@@ -1,0 +1,43 @@
+
+- name: check if java is present
+  stat: path=/usr/bin/java
+  register: hasJava
+
+- block:
+    - set_fact:
+        perfmap_root: /usr/local/perf-map-agent
+    - name: git clone perf-map-agent
+      git:
+        repo: https://github.com/jvm-profiling-tools/perf-map-agent
+        dest: "{{ perfmap_root }}"
+    - name: recover JAVA_HOME
+      shell: "java -XshowSettings 2>&1 |awk '/java.home/ { print $3 }'"
+      changed_when: false
+      register: javasettings
+    - debug: var=javasettings.stdout
+    - name: ensure perf-map-agent dependencies are present
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - cmake
+    - name: compile and install perf-map agent
+      command: "{{ item.c }}"
+      args:
+        creates: "{{ item.f }}"
+        chdir: "{{ item.dir }}"
+      environment:
+        JAVA_HOME: "{{ javasettings.stdout | default('') }}/.."
+      with_items:
+        - { c: 'cmake .', f: "{{ perfmap_root }}/Makefile", dir: "{{ perfmap_root }}" }
+        - { c: 'make', f: "{{ perfmap_root }}/out/libperfmap.so", dir: "{{ perfmap_root }}" }
+    - name: update jmaps configuration
+      replace:
+        dest: "{{ flamegraph_root }}/jmaps"
+        regexp: "{{ item.re }}"
+        replace: "{{ item.rep }}"
+        backup: yes
+      with_items:
+        - { re: '^JAVA_HOME=.*', rep: "JAVA_HOME={{ javasettings.stdout | default('') }}/.." }
+        - { re: '^AGENT_HOME=.*', rep: "AGENT_HOME={{ perfmap_root }}" }
+  when: hasJava is defined and hasJava.stat.exists

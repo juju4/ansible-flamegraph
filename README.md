@@ -57,7 +57,21 @@ $ vagrant ssh
 ## Troubleshooting & Known issues
 
 * Under travis, it seems kernel permissions prevent to do capture.
-* perf.data conversion fails sometimes with "ERROR: No stack counts found"
+
+* ```perf script``` seems to require a tty which maps to -t/-tt in ssh_args of ansible.cfg.
+Sadly, -t resulted in same message (```incompatible file format (rerun with -v to learn more)```) and -tt is just stalling at gathering facts.
+Only workaround, execute last command through interactive shell :(
+```
+ssh host
+cd /tmp/perf && perf script | /opt/flamegraph/stackcollapse-perf.pl --kernel | /opt/flamegraph/flamegraph.pl --color=java > /tmp/perf/out.svg
+```
+or through ssh -t
+```
+ssh -t host 'cd /tmp/perf && perf script | /opt/flamegraph/stackcollapse-perf.pl --kernel | /opt/flamegraph/flamegraph.pl --color=java > /tmp/perf/out.svg'
+```
+
+* collecting events through systemtap & ktap are not functional either, at least on Xenial
+
 
 ## License
 

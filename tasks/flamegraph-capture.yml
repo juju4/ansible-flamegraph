@@ -1,46 +1,71 @@
 ---
+## FIXME! to generate complete graph, you might need debug package of executables
+## https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 
 - name: get state of /proc/sys/kernel/perf_event_paranoid
   command: "cat /proc/sys/kernel/perf_event_paranoid"
   register: procperf
   changed_when: false
-- debug: var=procperf.stdout_lines
+- debug: var=procperf.stdout
 - name: update /proc/sys/kernel/perf_event_paranoid to 1 (can trace a command with perf stat or perf record, and get kernel profiling data)
   sysctl: name=kernel.perf_event_paranoid value=1 state=present
-  when: procperf.stdout_lines is defined and procperf.stdout_lines != 1
+  when: procperf is defined and procperf.stdout is defined and procperf.stdout != 1
 
 - name: check target directory exists
   file: dest="{{ flamegraph_outdir }}" state=directory mode=0755
 
-- name: check if existing perf.data file
-  stat: path="{{ flamegraph_outdir }}/perf.data"
-  register: perfdata
-- debug: var=perfdata
 - name: run perf_events
   command: "perf record -F 99 -a --call-graph=dwarf -o {{ flamegraph_outdir }}/perf.data -- sleep {{ flamegraph_duration }}"
   args:
     chdir: "{{ flamegraph_outdir }}"
-  when: flamegraph_pid is not defined and not perfdata.stat.exists
+    creates: "{{ flamegraph_outdir }}/perf.data"
+  when: flamegraph_pid is not defined
   register: perf
-- debug: var=perf.rc
-- debug: var=perf.stderr
+#- debug: var=perf.rc
+#- debug: var=perf.stderr
 - name: run perf_events - specific pid
   command: "perf record -F 99 -p {{ flamegraph_pid }} -a --call-graph=dwarf -o {{ flamegraph_outdir }}/perf.data -- sleep {{ flamegraph_duration }}"
   args:
     chdir: "{{ flamegraph_outdir }}"
-  when: flamegraph_pid is defined and not perfdata.stat.exists
+    creates: "{{ flamegraph_outdir }}/perf.data"
+  when: flamegraph_pid is defined
+
 - name: check output
   command: "ls -l {{ flamegraph_outdir }}/"
   changed_when: false
   register: perf2
 - debug: var=perf2.stdout_lines
 
-- stat: path="{{ flamegraph_outdir }}/out.svg"
-  register: perfsvg
-- name: convert record to flamegraph
-  shell: "perf script | env LC_ALL=en_US.UTF-8 {{ flamegraph_root }}/stackcollapse-perf.pl --kernel | env LC_ALL=en_US.UTF-8 {{ flamegraph_root }}/flamegraph.pl --color=java > {{ flamegraph_outdir }}/out.svg"
+- name: Java | run jmaps
+  command: "{{ flamegraph_root }}/jmaps"
   args:
     chdir: "{{ flamegraph_outdir }}"
-  when: not perfsvg.stat.exists
+  register: jmaps
+  failed_when: "'ERROR: ' in jmaps.stdout"
+  when: hasJava is defined and hasJava.stat.exists
+#- debug: var=jmaps
 
+#- name: convert record to flamegraph
+#  shell: "perf script | {{ flamegraph_root }}/stackcollapse-perf.pl --kernel | {{ flamegraph_root }}/flamegraph.pl --color=java > {{ flamegraph_outfile }}"
+#  args:
+#    chdir: "{{ flamegraph_outdir }}"
+#    creates: "{{ flamegraph_outfile }}"
+#  environment:
+#    LC_ALL: en_US.UTF-8
+
+- name: convert record to flamegraph
+  shell: "{{ item.c }} creates={{ item.f }}"
+  with_items:
+## FIXME! works fine in interactive shell but in ansible 'incompatible file format (rerun with -v to learn more)'
+##      NOK either: ssh host perf script 
+##      => use ssh -tt for tty but ansible is stalling #12103. -t = same bug and very slow
+##          https://github.com/ansible/ansible/issues/12103
+    - { c: "perf script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
+#    - { c: "perf --debug verbose=99 script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
+    - { c: "cat perf-script.out | {{ flamegraph_root }}/stackcollapse-perf.pl --kernel > stackcollapse.out", f: "{{ flamegraph_outdir }}/stackcollapse.out" }
+    - { c: "cat stackcollapse.out | {{ flamegraph_root }}/flamegraph.pl --color=java > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
+  args:
+    chdir: "{{ flamegraph_outdir }}"
+  environment:
+    LC_ALL: en_US.UTF-8
 

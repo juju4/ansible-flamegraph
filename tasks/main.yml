@@ -1,6 +1,7 @@
 ---
 ## http://www.brendangregg.com/flamegraphs.html
 ## http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html
+## FIXME! java flamegraph requires https://github.com/jvm-profiling-tools/perf-map-agent
 
 - include: debian.yml
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and (flamegraph_install is defined and flamegraph_install)
@@ -8,11 +9,23 @@
 - include: redhat.yml
   when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and (flamegraph_install is defined and flamegraph_install)
 
-- git: repo=https://github.com/brendangregg/FlameGraph
-       dest="{{ flamegraph_root }}"
+- name: git clone FlameGraph
+  git:
+    repo: https://github.com/brendangregg/FlameGraph
+    dest: "{{ flamegraph_root }}"
+    force: yes
   when: (flamegraph_install is defined and flamegraph_install)
 
-- include: flamegraph-capture.yml
+- block:
+    - include: java-perf.yml
+    - include: flamegraph-capture.yml
+      when: flamegraph_perftools == 'perf_events'
+    - include: systemtap-capture.yml
+      when: flamegraph_perftools == 'systemtap'
+    - include: ktap-capture.yml
+      when: flamegraph_perftools == 'ktap'
+    - include: data-fetch.yml
+      when: flamegraph_pull
   when: (flamegraph_capture is defined and flamegraph_capture) and (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
 
 - debug: msg="Not running flamegraph capture as container"
