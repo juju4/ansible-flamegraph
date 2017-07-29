@@ -6,11 +6,15 @@ A simple ansible role to setup and execute flamegraph
 http://www.brendangregg.com/flamegraphs.html
 https://github.com/brendangregg/FlameGraph
 
+If looking for a nice GUI
+https://www.kdab.com/hotspot-gui-linux-perf-profiler/
+
 ## Requirements & Dependencies
 
 ### Ansible
 It was tested on the following versions:
  * 2.0
+ * 2.3
 
 ### Operating systems
 
@@ -24,7 +28,7 @@ For example
 ```
 - host: all
   roles:
-    - flamegraph
+    - juju4.flamegraph
 ```
 
 Output file can easily be retrieve with command like
