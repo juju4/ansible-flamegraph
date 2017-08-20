@@ -2,6 +2,9 @@
 flamegraph_install: true
 flamegraph_capture: true
 
+flamegraph_args: --color=java
+#flamegraph_args: "--color=java --subtitle blahblah --notes randomnotes"
+
 flamegraph_root: /opt/flamegraph
 flamegraph_outdir: "/tmp/perf-{{ ansible_date_time.date }}"
 flamegraph_outfile: "{{ flamegraph_outdir }}/out.svg"

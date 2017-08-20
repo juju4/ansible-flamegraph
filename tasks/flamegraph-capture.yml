@@ -63,7 +63,7 @@
     - { c: "perf script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
 #    - { c: "perf --debug verbose=99 script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
     - { c: "cat perf-script.out | {{ flamegraph_root }}/stackcollapse-perf.pl --kernel > stackcollapse.out", f: "{{ flamegraph_outdir }}/stackcollapse.out" }
-    - { c: "cat stackcollapse.out | {{ flamegraph_root }}/flamegraph.pl --color=java > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
+    - { c: "cat stackcollapse.out | {{ flamegraph_root }}/flamegraph.pl {{ flamegraph_args }} > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
   args:
     chdir: "{{ flamegraph_outdir }}"
   environment:
