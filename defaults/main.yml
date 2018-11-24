@@ -20,4 +20,3 @@ flamegraph_perftools: perf_events
 ## fetch to orchestrator?
 flamegraph_pull: true
 flamegraph_pulldir: "tmp/{{ inventory_hostname }}-{{ ansible_date_time.date }}"
-

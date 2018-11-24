@@ -43,4 +43,3 @@
   with_items:
     - { c: "{{ flamegraph_root }}/stackcollapse-stap.pl out.stap-stacks > out.stap-folded", f: "{{ flamegraph_outdir }}/out.stap-folded" }
     - { c: "cat out.stap-folded | {{ flamegraph_root }}/flamegraph.pl > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
-

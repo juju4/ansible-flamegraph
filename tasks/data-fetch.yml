@@ -11,4 +11,3 @@
         - "{{ flamegraph_outdir }}/perf.data"
         - "{{ flamegraph_outfile }}"
   when: flamegraph_pull is defined and flamegraph_pull
-

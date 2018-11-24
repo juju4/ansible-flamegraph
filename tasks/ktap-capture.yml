@@ -47,4 +47,3 @@
     - { c: "{{ flamegraph_root }}/flamegraph.pl out.kstacks.folded > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
 #  environment:
 #    LC_ALL: en_US.UTF-8
-
