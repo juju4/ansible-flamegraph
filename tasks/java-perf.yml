@@ -1,3 +1,4 @@
+---
 
 - name: check if java is present
   stat: path=/usr/bin/java
