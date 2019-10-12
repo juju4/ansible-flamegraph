@@ -1,14 +1,16 @@
 ---
 
 - name: apt | perf packages install
-  apt: name={{item}} state=present update_cache=yes
-  with_items:
-    - linux-tools-{{ ansible_kernel }}
-    - perl
-    - git
-    - systemtap
+  apt:
+    name:
+      - linux-tools-{{ ansible_kernel }}
+      - perl
+      - git
+      - systemtap
 ## not available on trusty
-#    - ktap
+#      - ktap
+    state: present
+    update_cache: yes
 
 - name: apt | add debug symbols repository
   template:
