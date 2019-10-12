@@ -3,6 +3,10 @@
 ## http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html
 ## FIXME! java flamegraph requires https://github.com/jvm-profiling-tools/perf-map-agent
 
+- name: Include version-specific variables for Ubuntu.
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+  when: ansible_distribution == 'Ubuntu'
+
 - include: debian.yml
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and (flamegraph_install is defined and flamegraph_install)
 

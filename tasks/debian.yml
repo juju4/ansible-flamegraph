@@ -33,14 +33,5 @@
 
 - name: apt | ensure few debug packages are present
   apt:
-    name:
-#      - openssh-server-dbgsym
-      - libc6-dbgsym
-#      - rng-tools-dbgsym
-      - dpkg-dbgsym
-#      - dash-dbgsym
-## ok on xenial, nok trusty
-#      - sysstat-dbgsym
-#      - openntpd-dbgsym
-#      - auditd-dbgsym
+    name: "{{ flamegraph_dbg_pkgs | default([]) }}"
     state: present
