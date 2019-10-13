@@ -30,7 +30,7 @@
   command: >
     stap -s 32 -D MAXBACKTRACE=100 -D MAXSTRINGLEN=4096 -D MAXMAPENTRIES=10240 \
     -D MAXACTION=10000 -D STP_OVERLOAD_THRESHOLD=5000000000 --all-modules \
-    -ve 'global s; probe timer.profile { s[backtrace()] <<< 1; } 
+    -ve 'global s; probe timer.profile { s[backtrace()] <<< 1; }
     probe end { foreach (i in s+) { print_stack(i);
     printf("\t%d\n", @count(s[i])); } } probe timer.s({{ flamegraph_duration }}) { exit(); }' \
     > out.stap-stacks

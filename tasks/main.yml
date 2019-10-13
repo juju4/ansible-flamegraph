@@ -8,10 +8,14 @@
   when: ansible_distribution == 'Ubuntu'
 
 - include: debian.yml
-  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and (flamegraph_install is defined and flamegraph_install)
+  when: >
+    (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    and (flamegraph_install is defined and flamegraph_install)
 
 - include: redhat.yml
-  when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and (flamegraph_install is defined and flamegraph_install)
+  when: >
+    ansible_os_family == "RedHat"
+    and (flamegraph_install is defined and flamegraph_install)
 
 - name: git clone FlameGraph
   git:
@@ -30,7 +34,9 @@
       when: flamegraph_perftools == 'ktap'
     - include: data-fetch.yml
       when: flamegraph_pull
-  when: (flamegraph_capture is defined and flamegraph_capture) and (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
+  when: >
+    (flamegraph_capture is defined and flamegraph_capture) and
+    (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
 
 - debug: msg="Not running flamegraph capture as container"
   when: not (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
