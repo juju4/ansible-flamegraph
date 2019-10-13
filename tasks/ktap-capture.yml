@@ -35,7 +35,8 @@
 #- debug: var=jmaps
 
 - name: capture data with ktap
-  command: "ktap -e \'s = ptable(); profile-1ms { s[backtrace(12, -1)] <<< 1 } trace_end { for (k, v in pairs(s)) { print(k, count(v), \"\n\") } } tick-30s { exit(0) }\' -o out.kstacks"
+  command: >
+    ktap -e 's = ptable(); profile-1ms { s[backtrace(12, -1)] <<< 1 } trace_end { for (k, v in pairs(s)) { print(k, count(v), "\n") } } tick-30s { exit(0) }' -o out.kstacks
   args:
     chdir: "{{ flamegraph_outdir }}"
     creates: "{{ flamegraph_outdir }}/out.kstacks"
