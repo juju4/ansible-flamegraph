@@ -28,6 +28,8 @@
   with_items:
     - 428D7C01
     - C8CAB6595FDFF622
+  register: dl_result
+  until: dl_result is success
 
 - name: apt | update cache
   apt: update_cache=yes
