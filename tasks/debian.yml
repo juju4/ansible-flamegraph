@@ -12,6 +12,14 @@
     state: present
     update_cache: yes
 
+- name: apt | add debug symbol archive signing key
+  apt_key:
+    data: "{{ lookup('file', 'pgp-0x' + item|string + '.asc') }}"
+    state: present
+  with_items:
+    - 2512191fef8729d6e5af414decdcad72428d7c01
+    - C8CAB6595FDFF622
+
 - name: apt | add debug symbols repository
   template:
     src: ddebs.list.j2
@@ -19,17 +27,6 @@
     mode: '0644'
     backup: yes
   register: dbgrep
-
-- name: apt | add debug symbol archive signing key
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: "{{ item }}"
-    state: present
-  with_items:
-    - 428D7C01
-    - C8CAB6595FDFF622
-  register: dl_result
-  until: dl_result is success
 
 - name: apt | update cache
   apt: update_cache=yes
