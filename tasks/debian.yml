@@ -20,6 +20,12 @@
     - 2512191fef8729d6e5af414decdcad72428d7c01
   when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int < 18)
 
+- name: bionic+ | add debug symbol archive signing key
+  package:
+    name: ubuntu-dbgsym-keyring
+    state: present
+  when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
+
 - name: apt | add debug symbols repository
   template:
     src: ddebs.list.j2
