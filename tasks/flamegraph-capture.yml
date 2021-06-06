@@ -63,7 +63,7 @@
     ##      NOK either: ssh host perf script
     ##      => use ssh -tt for tty but ansible is stalling #12103. -t = same bug and very slow
     ##          https://github.com/ansible/ansible/issues/12103
-    - { c: "perf script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
+    - { c: "perf script -i perf.data > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
     # - { c: "perf --debug verbose=99 script > perf-script.out", f: "{{ flamegraph_outdir }}/perf-script.out" }
     - { c: "cat perf-script.out | {{ flamegraph_root }}/stackcollapse-perf.pl --kernel > stackcollapse.out", f: "{{ flamegraph_outdir }}/stackcollapse.out" }
     - { c: "cat stackcollapse.out | {{ flamegraph_root }}/flamegraph.pl {{ flamegraph_args }} > {{ flamegraph_outfile }}", f: "{{ flamegraph_outfile }}" }
