@@ -18,5 +18,3 @@ end
 #describe file('/tmp/out.svg') do
 #  it { should be_file }
 #end
-
-

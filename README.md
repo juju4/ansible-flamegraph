@@ -80,4 +80,3 @@ ssh -t host 'cd /tmp/perf && perf script | /opt/flamegraph/stackcollapse-perf.pl
 ## License
 
 BSD 2-clause
-
