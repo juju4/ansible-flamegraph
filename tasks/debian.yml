@@ -7,8 +7,8 @@
       - perl
       - git
       - systemtap
-## not available on trusty
-#      - ktap
+      ## not available on trusty
+      # - ktap
     state: present
     update_cache: yes
 
@@ -26,11 +26,11 @@
     dest: /etc/apt/sources.list.d/ddebs.list
     mode: '0644'
     backup: yes
-  register: dbgrep
+  notify:
+    - apt update cache
 
-- name: apt | update cache
-  apt: update_cache=yes
-  when: dbgrep.changed
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: apt | ensure few debug packages are present
   apt:

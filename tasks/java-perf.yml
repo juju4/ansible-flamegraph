@@ -2,20 +2,23 @@
 
 - name: check if java is present
   stat: path=/usr/bin/java
-  register: hasJava
+  register: has_java
 
 - block:
-    - set_fact:
+    - name: Set fact
+      set_fact:
         perfmap_root: /usr/local/perf-map-agent
     - name: git clone perf-map-agent
       git:
         repo: https://github.com/jvm-profiling-tools/perf-map-agent
         dest: "{{ perfmap_root }}"
+        version: "{{ flamegraph_perfmapagent_version | default('d9843a011f76c4edf5f3d7fe84dd513bc6422686') }}"
     - name: recover JAVA_HOME
       shell: "java -XshowSettings 2>&1 |awk '/java.home/ { print $3 }'"
       changed_when: false
       register: javasettings
-    - debug: var=javasettings.stdout
+    - name: Debug | java settings output
+      debug: var=javasettings.stdout verbosity=1
     - name: ensure perf-map-agent dependencies are present
       package:
         name: "{{ item }}"
@@ -41,4 +44,4 @@
       with_items:
         - { re: '^JAVA_HOME=.*', rep: "JAVA_HOME={{ javasettings.stdout | default('') }}/.." }
         - { re: '^AGENT_HOME=.*', rep: "AGENT_HOME={{ perfmap_root }}" }
-  when: hasJava is defined and hasJava.stat.exists
+  when: has_java is defined and has_java.stat.exists

@@ -6,7 +6,8 @@
   command: "cat /proc/sys/kernel/perf_event_paranoid"
   register: procperf
   changed_when: false
-- debug: var=procperf.stdout
+- name: Debug | procperf output
+  debug: var=procperf.stdout verbosity=1
 - name: update /proc/sys/kernel/perf_event_paranoid to 1 (can trace a command with perf stat or perf record, and get kernel profiling data)
   sysctl: name=kernel.perf_event_paranoid value=1 state=present
   when: procperf is defined and procperf.stdout is defined and procperf.stdout != 1
@@ -21,7 +22,8 @@
   register: jmaps
   failed_when: "'ERROR: ' in jmaps.stdout"
   when: hasJava is defined and hasJava.stat.exists
-#- debug: var=jmaps
+- name: Debug | jmaps output
+  debug: var=jmaps verbosity=1
 
 ## FIXME! NOK xenial
 ## https://bugs.launchpad.net/ubuntu/+source/systemtap/+bug/1537125
@@ -38,7 +40,7 @@
     chdir: "{{ flamegraph_outdir }}"
     creates: "{{ flamegraph_outdir }}/out.stap-stacks"
 
-- name: convert record to flamegraph
+- name: convert record to flamegraph  # noqa command-instead-of-shell
   shell: "{{ item.c }} creates={{ item.f }}"
   with_items:
     - { c: "{{ flamegraph_root }}/stackcollapse-stap.pl out.stap-stacks > out.stap-folded", f: "{{ flamegraph_outdir }}/out.stap-folded" }

@@ -21,6 +21,7 @@
   git:
     repo: https://github.com/brendangregg/FlameGraph
     dest: "{{ flamegraph_root }}"
+    version: "{{ flamegraph_version | default('a258e78f17abdf2ce21c2515cfe8306a44774e2a') }}"
     force: yes
   when: (flamegraph_install is defined and flamegraph_install)
 
@@ -38,5 +39,6 @@
     (flamegraph_capture is defined and flamegraph_capture) and
     (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))
 
-- debug: msg="Not running flamegraph capture as container"
+- name: Warning!
+  debug: msg="Not running flamegraph capture as container"
   when: not (ansible_virtualization_type is not defined or not (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker"))

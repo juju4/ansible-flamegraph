@@ -9,24 +9,24 @@ provisioner:
   name: ansible_playbook
   roles_path: ../
   hosts: test-kitchen
-#  ansible_verbose: true
+  # ansible_verbose: true
   ansible_verbose: false
   ansible_verbosity: 3
   ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
-#  require_chef_omnibus: false
+  # require_chef_omnibus: false
   require_ansible_omnibus: true
-#  require_chef_for_busser: false
+  # require_chef_for_busser: false
   enable_yum_epel: true
   ansible_connection: ssh
 
 platforms:
   - name: ubuntu-18.04
   - name: ubuntu-16.04
-#  - name: ubuntu-14.04
-#  - name: ubuntu-12.04
+  # - name: ubuntu-14.04
+  # - name: ubuntu-12.04
   - name: centos-7
-#  - name: centos-6
-#  - name: alpine-3.8
+  # - name: centos-6
+  # - name: alpine-3.8
 
 suites:
   - name: default
