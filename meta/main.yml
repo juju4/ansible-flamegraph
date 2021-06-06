@@ -16,4 +16,5 @@ galaxy_info:
   galaxy_tags:
     - system
     - monitoring
-dependencies: []
+dependencies:
+  - geerlingguy.java
