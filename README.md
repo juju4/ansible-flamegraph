@@ -1,5 +1,3 @@
-[![Build Status - Master](https://travis-ci.org/juju4/ansible-flamegraph.svg?branch=master)](https://travis-ci.org/juju4/ansible-flamegraph)
-[![Build Status - Devel](https://travis-ci.org/juju4/ansible-flamegraph.svg?branch=devel)](https://travis-ci.org/juju4/ansible-flamegraph/branches)
 # Flamegraph ansible role
 
 A simple ansible role to setup and execute flamegraph
