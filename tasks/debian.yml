@@ -18,7 +18,7 @@
     state: present
   with_items:
     - 2512191fef8729d6e5af414decdcad72428d7c01
-    - C8CAB6595FDFF622
+  when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int < 18)
 
 - name: apt | add debug symbols repository
   template:
