@@ -5,6 +5,7 @@ flamegraph_dbg_pkgs:
 #      - libc6-dbgsym
 #      - rng-tools-dbgsym
       - dpkg-dbgsym
+      - ubuntu-dbgsym-keyring
 #      - dash-dbgsym
 ## ok on xenial, nok trusty
 #      - sysstat-dbgsym
