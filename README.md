@@ -1,6 +1,8 @@
 [![Actions Status - Master](https://github.com/juju4/ansible-flamegraph/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-flamegraph/actions?query=branch%3Amaster)
 [![Actions Status - Devel](https://github.com/juju4/ansible-flamegraph/workflows/AnsibleCI/badge.svg?branch=devel)](https://github.com/juju4/ansible-flamegraph/actions?query=branch%3Adevel)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
+# DEPRECATED -> archived
 # Flamegraph ansible role
 
 A simple ansible role to setup and execute flamegraph
